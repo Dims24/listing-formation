@@ -47,7 +47,7 @@ def check_ignore(path,filelist,ignore,hr,file_name):
 
 
 def entry (path,filelist,hr,file_name):
-    bar = IncrementalBar('Progress', max=len(filelist))
+    bar = IncrementalBar('Loading...', max=len(filelist))
     doc = docx.Document(f'{file_name}.docx')
     for name in filelist:
         bar.next()
