@@ -25,7 +25,6 @@ def create_doc(hr,file_name):
 
 
 def check_ignore(path,filelist,ignore,hr,file_name):
-
     newlist = []
     if ignore==None:
         entry(path, filelist, hr, file_name)
@@ -42,7 +41,7 @@ def check_ignore(path,filelist,ignore,hr,file_name):
             else:
                 newlist.append(i)
         filelist=newlist
-        # print(filelist)
+        print(filelist,len(filelist))
         entry(path, filelist, hr, file_name)
 
 
@@ -89,7 +88,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description="Formation of the program listing")
     parser.add_argument("-td", "--tirgert_dir", dest="path", required=True,
                         help="Directory path")
-    parser.add_argument("-ig", "--ignore_dir", dest="ignore", default=None,
+    parser.add_argument("-ig", "--ignore_dir", dest="ignore", default=".git",
                         help="Ignore directory")
     parser.add_argument("-hr", "--header", dest="hr", default="А",
                         help="Application number")
