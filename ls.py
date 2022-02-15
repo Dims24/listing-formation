@@ -3,6 +3,7 @@ import sys
 from argparse import ArgumentParser
 from docx.shared import Pt,Mm
 import docx
+from progress.bar import IncrementalBar
 
 
 def list_files(path,ignore,hr,file_name):
@@ -47,11 +48,14 @@ def check_ignore(path,filelist,ignore,hr,file_name):
 
 
 def entry (path,filelist,hr,file_name):
+    bar = IncrementalBar('Progress', max=len(filelist))
     doc = docx.Document(f'{file_name}.docx')
     for name in filelist:
+        bar.next()
         name1 = name.replace(f'{path}\\', "")
         name=name.replace("\\","\\\\")
         dock_formation(doc,name1, name,hr,file_name)
+    bar.finish()
     doc.save(f'{file_name}.docx')
 
 i=1
@@ -92,6 +96,7 @@ if __name__ == '__main__':
     parser.add_argument("-o", "--output", dest="file_name", required=True,
                         help="File name")
     args = parser.parse_args()
+
     list_files(args.path, args.ignore, args.hr, args.file_name)
 
 
