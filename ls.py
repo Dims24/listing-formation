@@ -47,14 +47,17 @@ def check_ignore(path,filelist,ignore,hr,file_name):
 
 
 def entry (path,filelist,hr,file_name):
+    doc = docx.Document(f'{file_name}.docx')
     for name in filelist:
         name1 = name.replace(f'{path}\\', "")
         name=name.replace("\\","\\\\")
-        dock_formation(name1, name,hr,file_name)
+        dock_formation(doc,name1, name,hr,file_name)
+    doc.save(f'{file_name}.docx')
+
 i=1
-def dock_formation(name1,name,hr,file_name):
+def dock_formation(doc,name1,name,hr,file_name):
     global i
-    doc = docx.Document(f'{file_name}.docx')
+    # doc = docx.Document(f'{file_name}.docx')
     p =doc.add_paragraph(f'Листинг {hr}.{i} - {name1}')
     i+=1
     table = doc.add_table(rows=1, cols=1)
@@ -75,7 +78,7 @@ def dock_formation(name1,name,hr,file_name):
     font.name = 'Times New Roman'
     font.size = Pt(14)
     # doc.add_page_break()
-    doc.save(f'{file_name}.docx')
+    # doc.save(f'{file_name}.docx')
 
 
 if __name__ == '__main__':
@@ -86,10 +89,11 @@ if __name__ == '__main__':
                         help="Ignore directory")
     parser.add_argument("-hr", "--header", dest="hr", default="А",
                         help="Application number")
-    parser.add_argument("-n", "--name", dest="file_name", required=True,
+    parser.add_argument("-o", "--output", dest="file_name", required=True,
                         help="File name")
     args = parser.parse_args()
     list_files(args.path, args.ignore, args.hr, args.file_name)
+
 
 # C:\Users\Admin\PycharmProjects\pythonProject
 # C:\Users\Admin\AppData\Local\Programs\Python\Python310\python.exe
