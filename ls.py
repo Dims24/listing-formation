@@ -41,6 +41,7 @@ def check_ignore(path,filelist,ignore,hr,file_name):
             else:
                 newlist.append(i)
         filelist=newlist
+        # print(filelist)
         entry(path, filelist, hr, file_name)
 
 
@@ -56,16 +57,16 @@ def dock_formation(name1,name,hr,file_name):
     doc = docx.Document(f'{file_name}.docx')
     p =doc.add_paragraph(f'Листинг {hr}.{i} - {name1}')
     i+=1
-    # table = doc.add_table(rows=1, cols=1)
-    # table.style = 'Table Grid'
+    table = doc.add_table(rows=1, cols=1)
+    table.style = 'Table Grid'
     try:
-        table = doc.add_table(rows=1, cols=1)
-        table.style = 'Table Grid'
+        # table = doc.add_table(rows=1, cols=1)
+        # table.style = 'Table Grid'
         info = open(name,encoding="utf8",errors='ignore').read().strip()
         table.cell(0, 0).text = info
     except:
-        table = doc.add_table(rows=1, cols=1)
-        table.style = 'Table Grid'
+        # table = doc.add_table(rows=1, cols=1)
+        # table.style = 'Table Grid'
         table.cell(0, 0).text = "Кодировка не верная"
     fmt = p.paragraph_format
     fmt.space_before = Mm(3)
