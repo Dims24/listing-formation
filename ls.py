@@ -67,7 +67,7 @@ def dock_formation(name1,name,hr,file_name):
     except:
         # table = doc.add_table(rows=1, cols=1)
         # table.style = 'Table Grid'
-        table.cell(0, 0).text = "Кодировка не верная"
+        table.cell(0, 0).text = "Измените кодировку"
     fmt = p.paragraph_format
     fmt.space_before = Mm(3)
     style = doc.styles['Normal']
