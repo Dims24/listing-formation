@@ -41,7 +41,7 @@ def check_ignore(path,filelist,ignore,hr,file_name):
             else:
                 newlist.append(i)
         filelist=newlist
-        print(filelist,len(filelist))
+        # print(filelist,len(filelist))
         entry(path, filelist, hr, file_name)
 
 
