@@ -33,7 +33,7 @@ def check_ignore(path,filelist,ignore,hr,file_name):
         for i in filelist:
             found = False
             for j in ignore:
-                if j in i:
+                if f'\\{j}\\' in i:
                     found = j
                     break
             if found:
