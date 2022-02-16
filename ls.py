@@ -4,6 +4,8 @@ from argparse import ArgumentParser
 from docx.shared import Pt,Mm
 import docx
 from progress.bar import IncrementalBar
+from docx2pdf import convert
+
 
 
 def list_files(path,ignore,hr,file_name):
@@ -57,6 +59,7 @@ def entry (path,filelist,hr,file_name):
         dock_formation(doc,name1, name,hr,file_name)
     bar.finish()
     doc.save(f'{file_name}.docx')
+    convert(f'{file_name}.docx', f'{file_name}.pdf')
 
 
 i=1
