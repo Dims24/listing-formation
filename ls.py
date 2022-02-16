@@ -47,7 +47,8 @@ def check_ignore(path,filelist,ignore,hr,file_name):
 
 
 def entry (path,filelist,hr,file_name):
-    bar = IncrementalBar('Loading...', max=len(filelist))
+    max = len(filelist)
+    bar = IncrementalBar('Loading...',max=len(filelist), suffix = f'{max} - %(percent).1f%% - %(eta)ds')
     doc = docx.Document(f'{file_name}.docx')
     for name in filelist:
         bar.next()
@@ -56,6 +57,7 @@ def entry (path,filelist,hr,file_name):
         dock_formation(doc,name1, name,hr,file_name)
     bar.finish()
     doc.save(f'{file_name}.docx')
+
 
 i=1
 def dock_formation(doc,name1,name,hr,file_name):
