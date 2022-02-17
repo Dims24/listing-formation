@@ -65,7 +65,6 @@ def breaking(count,intcount):
 j=0
 def entry (path,filelist,hr,file_name,count,bar,intcount):
     global j
-    max = len(filelist)
     doc = docx.Document(f'{file_name} - {o}.docx')
     if len(filelist) == 0:
         return True
@@ -80,10 +79,6 @@ def entry (path,filelist,hr,file_name,count,bar,intcount):
             dock_formation(doc, name1, name, hr,bar)
             doc.save(f'{file_name} - {o}.docx')
             bar.next()
-            entry(path, filelist, hr, file_name,count,bar,intcount)
-
-
-    # else:
 
 
 
@@ -101,10 +96,10 @@ def create_doc1(hr,file_name,path, filelist,count,bar,intcount):
 
 
 
+
 i=1
 def dock_formation(doc,name1,name,hr,bar):
     global i
-    # doc = docx.Document(f'{file_name}.docx')
     p =doc.add_paragraph(f'Листинг {hr}.{i} - {name1}')
     i+=1
     table = doc.add_table(rows=1, cols=1)
