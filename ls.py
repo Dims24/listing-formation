@@ -56,7 +56,6 @@ def crutch(path, filelist, hr, file_name,count,intcount):
         it=it-1
         entry(path, filelist, hr, file_name, count,bar,intcount)
     bar.finish()
-    return True
 
 def breaking(count,intcount):
     intcount=math.ceil((count/int(intcount)))
@@ -95,8 +94,6 @@ def create_doc1(hr,file_name,path, filelist,count,bar,intcount):
     entry(path, filelist, hr, file_name,count,bar,intcount)
 
 
-
-
 i=1
 def dock_formation(doc,name1,name,hr,bar):
     global i
@@ -115,7 +112,6 @@ def dock_formation(doc,name1,name,hr,bar):
     font = style.font
     font.name = 'Times New Roman'
     font.size = Pt(14)
-
     # doc.add_page_break()
 
 
