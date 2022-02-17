@@ -8,12 +8,15 @@ import math
 
 
 def list_files(path,ignore,hr,file_name,intcount):
-    create_doc(hr,file_name)
-    filelist = []
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            filelist.append(os.path.join(root, file))
-    check_ignore(path,filelist,ignore,hr,file_name,intcount)
+    if os.path.exists(path):
+        create_doc(hr,file_name)
+        filelist = []
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                filelist.append(os.path.join(root, file))
+        check_ignore(path,filelist,ignore,hr,file_name,intcount)
+    else:
+        print(f'Каталога \'{path}\' не существует')
 
 o=1
 
@@ -53,8 +56,11 @@ def crutch(path, filelist, hr, file_name,count,intcount):
     it=count
     bar = IncrementalBar('Loading...', max=it, suffix=f' %(index).d/%(max).d - %(percent).1f%% - %(elapsed).ds')
     while it>0:
-        it=it-1
-        entry(path, filelist, hr, file_name, count,bar,intcount)
+        try:
+            it=it-1
+            entry(path, filelist, hr, file_name, count,bar,intcount)
+        except Exception as e:
+            print(e)
     bar.finish()
 
 def breaking(count,intcount):
