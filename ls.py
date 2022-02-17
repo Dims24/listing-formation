@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from docx.shared import Pt,Mm
 import docx
 from progress.bar import IncrementalBar
+import math
 
 
 def list_files(path,ignore,hr,file_name,intcount):
@@ -44,6 +45,7 @@ def check_ignore(path,filelist,ignore,hr,file_name,intcount):
         filelist=newlist
         count=len(filelist)
         # print(filelist,len(filelist))
+        intcount=breaking(count, intcount)
         crutch(path, filelist, hr, file_name,count,intcount)
 
 it=0
@@ -56,12 +58,15 @@ def crutch(path, filelist, hr, file_name,count,intcount):
     bar.finish()
     return True
 
+def breaking(count,intcount):
+    intcount=math.ceil((count/int(intcount)))
+    return intcount
+
 j=0
 def entry (path,filelist,hr,file_name,count,bar,intcount):
     global j
     max = len(filelist)
     doc = docx.Document(f'{file_name} - {o}.docx')
-    persent=max/count*100
     if len(filelist) == 0:
         return True
     for name in filelist:
@@ -129,11 +134,12 @@ if __name__ == '__main__':
                         help="Application number")
     parser.add_argument("-o", "--output", dest="file_name", required=True,
                         help="File name")
-    parser.add_argument("-i", "--int", dest="intcount", required=True,
-                        help="the number of processed files in the document")
+    parser.add_argument("-n", "--num", dest="intcount", required=True,
+                        help="Number of files to split into")
     args = parser.parse_args()
 
     list_files(args.path, args.ignore, args.hr, args.file_name,args.intcount)
+
 
 
 # C:\Users\Admin\PycharmProjects\pythonProject
