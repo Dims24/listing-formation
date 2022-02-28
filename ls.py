@@ -1,5 +1,4 @@
 import os
-import sys
 from argparse import ArgumentParser
 from docx.shared import Pt,Mm
 import docx
@@ -7,14 +6,14 @@ from progress.bar import IncrementalBar
 import math
 
 
-def list_files(path,ignore,hr,file_name,intcount,font):
+def list_files(path,ignore,hr,file_name,intcount):
     if os.path.exists(path):
         create_doc(hr,file_name)
         filelist = []
         for root, dirs, files in os.walk(path):
             for file in files:
                 filelist.append(os.path.join(root, file))
-        check_ignore(path,filelist,ignore,hr,file_name,intcount,font)
+        check_ignore(path,filelist,ignore,hr,file_name,intcount)
     else:
         print(f'Каталога \'{path}\' не существует')
 
@@ -29,7 +28,7 @@ def create_doc(hr,file_name):
     doc.save(f'{file_name} - {o}.docx')
 
 
-def check_ignore(path,filelist,ignore,hr,file_name,intcount,font):
+def check_ignore(path,filelist,ignore,hr,file_name,intcount):
     newlist = []
     if ignore==None:
         entry(path, filelist, hr, file_name)
@@ -47,47 +46,46 @@ def check_ignore(path,filelist,ignore,hr,file_name,intcount,font):
                 newlist.append(i)
         filelist=newlist
         count=len(filelist)
-        # print(filelist,len(filelist))
         intcount=breaking(count, intcount)
-        crutch(path, filelist, hr, file_name,count,intcount,font)
+        crutch(path, filelist, hr, file_name,count,intcount)
 
 it=0
-def crutch(path, filelist, hr, file_name,count,intcount,font):
+def crutch(path, filelist, hr, file_name,count,intcount):
     it=count
     bar = IncrementalBar('Loading...', max=it, suffix=f' %(index).d/%(max).d - %(percent).1f%% - %(elapsed).ds')
     while it>0:
         try:
             it=it-1
-            entry(path, filelist, hr, file_name, count,bar,intcount,font)
+            entry(path, filelist, hr, file_name, count,bar,intcount)
         except Exception as e:
             print(e)
     bar.finish()
 
 def breaking(count,intcount):
-    intcount=math.ceil((count/int(intcount)))
+    intcount = math.ceil((count/int(intcount)))
     return intcount
 
 j=0
-def entry (path,filelist,hr,file_name,count,bar,intcount,font):
+def entry (path,filelist,hr,file_name,count,bar,intcount):
     global j
     doc = docx.Document(f'{file_name} - {o}.docx')
     if len(filelist) == 0:
         return True
     for name in filelist:
         if j >= int(intcount):
-            create_doc1(hr, file_name, path, filelist,count,bar,intcount,font)
+            create_doc1(hr, file_name, path, filelist,count,bar,intcount)
         else:
             filelist.remove(name)
             j += 1
             name1 = name.replace(f'{path}\\', "")
             name = name.replace("\\", "\\\\")
-            dock_formation(doc, name1, name, hr,bar,font)
+            dock_formation(doc, name1, name, hr,bar)
             doc.save(f'{file_name} - {o}.docx')
             bar.next()
 
 
 
-def create_doc1(hr,file_name,path, filelist,count,bar,intcount,font):
+def create_doc1(hr,file_name,path, filelist,count,bar,intcount):
     global o
     global j
     o += 1
@@ -97,11 +95,11 @@ def create_doc1(hr,file_name,path, filelist,count,bar,intcount,font):
     par.add_run(f'Приложение {hr}').bold = True
     par.alignment = 1
     doc.save(f'{file_name} - {o}.docx')
-    entry(path, filelist, hr, file_name,count,bar,intcount,font)
+    entry(path, filelist, hr, file_name,count,bar,intcount)
 
 
 i=1
-def dock_formation(doc,name1,name,hr,bar,font):
+def dock_formation(doc,name1,name,hr,bar):
     global i
     p =doc.add_paragraph(f'Листинг {hr}.{i} - {name1}')
     i+=1
@@ -115,10 +113,10 @@ def dock_formation(doc,name1,name,hr,bar,font):
     fmt = p.paragraph_format
     fmt.space_before = Mm(3)
     style = doc.styles['Normal']
-    font_style = style.font
-    font_style.name = 'Times New Roman'
-    font_style.size = Pt(font)
-    # doc.add_page_break()
+    font = style.font
+    font.name = 'Times New Roman'
+    font.size = Pt(14)
+
 
 
 if __name__ == '__main__':
@@ -133,13 +131,9 @@ if __name__ == '__main__':
                         help="File name")
     parser.add_argument("-n", "--num", dest="intcount", required=True,
                         help="Number of files to split into")
-    parser.add_argument("-f", "--font", dest="font", default=14, type=int,
-                        help="Font of text")
     args = parser.parse_args()
 
-    list_files(args.path, args.ignore, args.hr, args.file_name,args.intcount,args.font)
+    list_files(args.path, args.ignore, args.hr, args.file_name,args.intcount)
 
 
 
-# C:\Users\Admin\PycharmProjects\pythonProject
-# C:\Users\Admin\AppData\Local\Programs\Python\Python310\python.exe
