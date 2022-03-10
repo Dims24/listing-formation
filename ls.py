@@ -57,8 +57,8 @@ def crutch(path, filelist, hr, file_name,count,intcount):
         try:
             it=it-1
             entry(path, filelist, hr, file_name, count,bar,intcount)
-        except Exception as e:
-            print(e)
+        except:
+            continue
     bar.finish()
 
 def breaking(count,intcount):
