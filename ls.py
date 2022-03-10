@@ -72,6 +72,7 @@ def entry (path,filelist,hr,file_name,count,bar,intcount):
     if len(filelist) == 0:
         return True
     for name in filelist:
+
         if j >= int(intcount):
             create_doc1(hr, file_name, path, filelist,count,bar,intcount)
         else:
@@ -91,9 +92,6 @@ def create_doc1(hr,file_name,path, filelist,count,bar,intcount):
     o += 1
     j = 0
     doc = docx.Document()
-    par = doc.add_paragraph()
-    par.add_run(f'Приложение {hr}').bold = True
-    par.alignment = 1
     doc.save(f'{file_name} - {o}.docx')
     entry(path, filelist, hr, file_name,count,bar,intcount)
 
@@ -101,22 +99,31 @@ def create_doc1(hr,file_name,path, filelist,count,bar,intcount):
 i=1
 def dock_formation(doc,name1,name,hr,bar):
     global i
-    p =doc.add_paragraph(f'Листинг {hr}.{i} - {name1}')
-    i+=1
-    table = doc.add_table(rows=1, cols=1)
-    table.style = 'Table Grid'
+    p = doc.add_paragraph(f'Листинг {hr}.{i} - {name1}')
     try:
+        i += 1
+        table = doc.add_table(rows=1, cols=1)
+        table.style = 'Table Grid'
         info = open(name,encoding="utf8",errors='ignore').read().strip()
         table.cell(0, 0).text = info
+        fmt = p.paragraph_format
+        fmt.space_before = Mm(3)
+        style = doc.styles['Normal']
+        font = style.font
+        font.name = 'Times New Roman'
+        font.size = Pt(14)
     except:
-        table.cell(0, 0).text = "Измените кодировку"
-    fmt = p.paragraph_format
-    fmt.space_before = Mm(3)
-    style = doc.styles['Normal']
-    font = style.font
-    font.name = 'Times New Roman'
-    font.size = Pt(14)
+        delete_paragraph(p)
+        i -= 1
+        allTables = doc.tables
+        for activeTable in allTables:
+            if activeTable.cell(0, 0).paragraphs[0].text == '':
+                activeTable._element.getparent().remove(activeTable._element)
 
+def delete_paragraph(paragraph):
+    p = paragraph._element
+    p.getparent().remove(p)
+    p._p = p._element = None
 
 
 if __name__ == '__main__':
