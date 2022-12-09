@@ -1,25 +1,28 @@
+import math
 import os
 from argparse import ArgumentParser
-from docx.shared import Pt,Mm
+
 import docx
+from docx.shared import Pt, Mm
 from progress.bar import IncrementalBar
-import math
 
 
-def list_files(path,ignore,hr,file_name,intcount):
+def list_files(path, ignore, hr, file_name, intcount):
     if os.path.exists(path):
-        create_doc(hr,file_name)
+        create_doc(hr, file_name)
         filelist = []
         for root, dirs, files in os.walk(path):
             for file in files:
                 filelist.append(os.path.join(root, file))
-        check_ignore(path,filelist,ignore,hr,file_name,intcount)
+        check_ignore(path, filelist, ignore, hr, file_name, intcount)
     else:
         print(f'Каталога \'{path}\' не существует')
 
-o=1
 
-def create_doc(hr,file_name):
+o = 1
+
+
+def create_doc(hr, file_name):
     global o
     doc = docx.Document()
     par = doc.add_paragraph()
@@ -28,45 +31,52 @@ def create_doc(hr,file_name):
     doc.save(f'{file_name} - {o}.docx')
 
 
-def check_ignore(path,filelist,ignore,hr,file_name,intcount):
+def check_ignore(path, file_lists, ignore, hr, file_name, intcount):
     newlist = []
-    if ignore==None:
-        entry(path, filelist, hr, file_name)
+    if ignore == None:
+        entry(path, file_lists, hr, file_name)
     else:
         ignore = ignore.split()
-        for i in filelist:
+        for file_list in file_lists:
             found = False
             for j in ignore:
-                if f'\\{j}\\' in i:
+                if f'\\{j}\\' in file_list:
                     found = j
                     break
             if found:
                 continue
             else:
-                newlist.append(i)
-        filelist=newlist
-        count=len(filelist)
-        intcount=breaking(count, intcount)
-        crutch(path, filelist, hr, file_name,count,intcount)
+                newlist.append(file_list)
+        file_lists = newlist
+        count = len(file_lists)
+        intcount = breaking(count, intcount)
+        crutch(path, file_lists, hr, file_name, count, intcount)
 
-it=0
-def crutch(path, filelist, hr, file_name,count,intcount):
-    it=count
+
+it = 0
+
+
+def crutch(path, filelist, hr, file_name, count, intcount):
+    it = count
     bar = IncrementalBar('Loading...', max=it, suffix=f' %(index).d/%(max).d - %(percent).1f%% - %(elapsed).ds')
-    while it>0:
+    while it > 0:
         try:
-            it=it-1
-            entry(path, filelist, hr, file_name, count,bar,intcount)
+            it = it - 1
+            entry(path, filelist, hr, file_name, count, bar, intcount)
         except:
             continue
     bar.finish()
 
-def breaking(count,intcount):
-    intcount = math.ceil((count/int(intcount)))
+
+def breaking(count, intcount):
+    intcount = math.ceil((count / int(intcount)))
     return intcount
 
-j=0
-def entry (path,filelist,hr,file_name,count,bar,intcount):
+
+j = 0
+
+
+def entry(path, filelist, hr, file_name, count, bar, intcount):
     global j
     doc = docx.Document(f'{file_name} - {o}.docx')
     if len(filelist) == 0:
@@ -74,37 +84,38 @@ def entry (path,filelist,hr,file_name,count,bar,intcount):
     for name in filelist:
 
         if j >= int(intcount):
-            create_doc1(hr, file_name, path, filelist,count,bar,intcount)
+            create_doc1(hr, file_name, path, filelist, count, bar, intcount)
         else:
             filelist.remove(name)
             j += 1
             name1 = name.replace(f'{path}\\', "")
             name = name.replace("\\", "\\\\")
-            dock_formation(doc, name1, name, hr,bar)
+            dock_formation(doc, name1, name, hr, bar)
             doc.save(f'{file_name} - {o}.docx')
             bar.next()
 
 
-
-def create_doc1(hr,file_name,path, filelist,count,bar,intcount):
+def create_doc1(hr, file_name, path, filelist, count, bar, intcount):
     global o
     global j
     o += 1
     j = 0
     doc = docx.Document()
     doc.save(f'{file_name} - {o}.docx')
-    entry(path, filelist, hr, file_name,count,bar,intcount)
+    entry(path, filelist, hr, file_name, count, bar, intcount)
 
 
-i=1
-def dock_formation(doc,name1,name,hr,bar):
+i = 1
+
+
+def dock_formation(doc, name1, name, hr, bar):
     global i
     p = doc.add_paragraph(f'Листинг {hr}.{i} - {name1}')
     try:
         i += 1
         table = doc.add_table(rows=1, cols=1)
         table.style = 'Table Grid'
-        info = open(name,encoding="utf8",errors='ignore').read().strip()
+        info = open(name, encoding="utf8", errors='ignore').read().strip()
         table.cell(0, 0).text = info
         fmt = p.paragraph_format
         fmt.space_before = Mm(3)
@@ -120,6 +131,7 @@ def dock_formation(doc,name1,name,hr,bar):
             if activeTable.cell(0, 0).paragraphs[0].text == '':
                 activeTable._element.getparent().remove(activeTable._element)
 
+
 def delete_paragraph(paragraph):
     p = paragraph._element
     p.getparent().remove(p)
@@ -128,19 +140,16 @@ def delete_paragraph(paragraph):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description="Formation of the program listing")
-    parser.add_argument("-td", "--tirgert_dir", dest="path", required=True,
-                        help="Directory path")
+    parser.add_argument("-td", "--target_dir", dest="path", required=True,
+                        help="Путь к директории")
     parser.add_argument("-ig", "--ignore_dir", dest="ignore", default=".git",
-                        help="Ignore directory")
+                        help="Игнорируемые элементы")
     parser.add_argument("-hr", "--header", dest="hr", default="А",
                         help="Application number")
     parser.add_argument("-o", "--output", dest="file_name", required=True,
-                        help="File name")
+                        help="Название файла")
     parser.add_argument("-n", "--num", dest="intcount", required=True,
-                        help="Number of files to split into")
+                        help="Количество файлов для разделения")
     args = parser.parse_args()
 
-    list_files(args.path, args.ignore, args.hr, args.file_name,args.intcount)
-
-
-
+    list_files(args.path, args.ignore, args.hr, args.file_name, args.intcount)
