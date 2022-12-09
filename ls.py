@@ -7,14 +7,14 @@ from docx.shared import Pt, Mm
 from progress.bar import IncrementalBar
 
 
-def list_files(path, ignore, hr, file_name, intcount):
+def list_files(path, ignore, hr, file_name, number):
     if os.path.exists(path):
         create_doc(hr, file_name)
         filelist = []
         for root, dirs, files in os.walk(path):
             for file in files:
                 filelist.append(os.path.join(root, file))
-        check_ignore(path, filelist, ignore, hr, file_name, intcount)
+        check_ignore(path, filelist, ignore, hr, file_name, number)
     else:
         print(f'Каталога \'{path}\' не существует')
 
@@ -31,7 +31,7 @@ def create_doc(hr, file_name):
     doc.save(f'{file_name} - {o}.docx')
 
 
-def check_ignore(path, file_lists, ignore, hr, file_name, intcount):
+def check_ignore(path, file_lists, ignore, hr, file_name, number):
     newlist = []
     if ignore == None:
         entry(path, file_lists, hr, file_name)
@@ -49,42 +49,42 @@ def check_ignore(path, file_lists, ignore, hr, file_name, intcount):
                 newlist.append(file_list)
         file_lists = newlist
         count = len(file_lists)
-        intcount = breaking(count, intcount)
-        crutch(path, file_lists, hr, file_name, count, intcount)
+        number = breaking(count, number)
+        crutch(path, file_lists, hr, file_name, count, number)
 
 
 it = 0
 
 
-def crutch(path, filelist, hr, file_name, count, intcount):
+def crutch(path, filelist, hr, file_name, count, number):
     it = count
     bar = IncrementalBar('Loading...', max=it, suffix=f' %(index).d/%(max).d - %(percent).1f%% - %(elapsed).ds')
     while it > 0:
         try:
             it = it - 1
-            entry(path, filelist, hr, file_name, count, bar, intcount)
+            entry(path, filelist, hr, file_name, count, bar, number)
         except:
             continue
     bar.finish()
 
 
-def breaking(count, intcount):
-    intcount = math.ceil((count / int(intcount)))
-    return intcount
+def breaking(count, number):
+    number = math.ceil((count / int(number)))
+    return number
 
 
 j = 0
 
 
-def entry(path, filelist, hr, file_name, count, bar, intcount):
+def entry(path, filelist, hr, file_name, count, bar, number):
     global j
     doc = docx.Document(f'{file_name} - {o}.docx')
     if len(filelist) == 0:
         return True
     for name in filelist:
 
-        if j >= int(intcount):
-            create_doc1(hr, file_name, path, filelist, count, bar, intcount)
+        if j >= int(number):
+            create_doc1(hr, file_name, path, filelist, count, bar, number)
         else:
             filelist.remove(name)
             j += 1
@@ -95,14 +95,14 @@ def entry(path, filelist, hr, file_name, count, bar, intcount):
             bar.next()
 
 
-def create_doc1(hr, file_name, path, filelist, count, bar, intcount):
+def create_doc1(hr, file_name, path, filelist, count, bar, number):
     global o
     global j
     o += 1
     j = 0
     doc = docx.Document()
     doc.save(f'{file_name} - {o}.docx')
-    entry(path, filelist, hr, file_name, count, bar, intcount)
+    entry(path, filelist, hr, file_name, count, bar, number)
 
 
 i = 1
@@ -126,10 +126,10 @@ def dock_formation(doc, name1, name, hr, bar):
     except:
         delete_paragraph(p)
         i -= 1
-        allTables = doc.tables
-        for activeTable in allTables:
-            if activeTable.cell(0, 0).paragraphs[0].text == '':
-                activeTable._element.getparent().remove(activeTable._element)
+        all_tables = doc.tables
+        for active_table in all_tables:
+            if active_table.cell(0, 0).paragraphs[0].text == '':
+                active_table._element.getparent().remove(active_table._element)
 
 
 def delete_paragraph(paragraph):
@@ -148,8 +148,8 @@ if __name__ == '__main__':
                         help="Application number")
     parser.add_argument("-o", "--output", dest="file_name", required=True,
                         help="Название файла")
-    parser.add_argument("-n", "--num", dest="intcount", required=True,
+    parser.add_argument("-n", "--num", dest="number", required=True,
                         help="Количество файлов для разделения")
     args = parser.parse_args()
 
-    list_files(args.path, args.ignore, args.hr, args.file_name, args.intcount)
+    list_files(args.path, args.ignore, args.hr, args.file_name, args.number)
